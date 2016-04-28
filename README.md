@@ -13,6 +13,8 @@ This will create and setup 4 Vagrant machines in a private network (10.0.7.0/24)
 
 Install [Vagrant][vagranthome] and [Docker][dockerhome] on your machine.
 
+Ensure you have a valid [Vagrant provider][vagrantprovider] installed.
+
 # Setup
 
 ## Boot Vagrant machines
@@ -81,4 +83,5 @@ $ docker -H 10.0.7.11:4000 network create my_shared_network
 ```
 
 [vagranthome]: https://www.vagrantup.com/docs/installation/  "Vagrant installation"
+[vagrantprovider]: https://www.vagrantup.com/docs/providers/ "Vagrant providers"
 [dockerhome]: https://docs.docker.com/engine/installation/  "Docker installation"
