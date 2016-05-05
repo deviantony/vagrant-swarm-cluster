@@ -7,17 +7,20 @@ exportfs -a && service nfs-kernel-server start;
 SCRIPT
 
 $prepare_consul_server_script = <<SCRIPT
+apt-get update && apt-get upgrade -y docker-engine;
 echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"' | tee -a /etc/default/docker;
 service docker restart;
 SCRIPT
 
 $prepare_swarm_manager_script = <<SCRIPT
+apt-get update && apt-get upgrade -y docker-engine;
 rm -rf /etc/docker/key.json
 echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.10:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
 service docker restart;
 SCRIPT
 
 $prepare_swarm_node_script = <<SCRIPT
+apt-get update && apt-get upgrade -y docker-engine;
 service docker stop;
 sudo mount 10.0.7.9:/var/nfs /var/lib/docker/volumes;
 apt-get update && apt-get install -y nfs-kernel-server nfs-common;
@@ -36,7 +39,6 @@ Vagrant.configure(2) do |config|
   end
   config.vm.define "consul" do |config|
     config.vm.box = "box-cutter/ubuntu1404-docker"
-    config.vm.box_version = "2.0.16" # Docker 1.10.3
     config.vm.hostname = "consul"
     config.vm.network "private_network", ip: "10.0.7.10"
     config.vm.provision "shell", inline: $prepare_consul_server_script
@@ -44,7 +46,6 @@ Vagrant.configure(2) do |config|
   end
   config.vm.define "swarm_manager" do |config|
     config.vm.box = "box-cutter/ubuntu1404-docker"
-    config.vm.box_version = "2.0.16" # Docker 1.10.3
     config.vm.hostname = "swarm-manager"
     config.vm.network "private_network", ip: "10.0.7.11"
     config.vm.provision "shell", inline: $prepare_swarm_manager_script
@@ -53,7 +54,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "swarm_node1" do |config|
     config.vm.box = "box-cutter/ubuntu1404-docker"
-    config.vm.box_version = "2.0.16" # Docker 1.10.3
     config.vm.hostname = "swarm-node1"
     config.vm.network "private_network", ip: "10.0.7.12"
     config.vm.provision "shell", inline: $prepare_swarm_node_script
@@ -62,7 +62,6 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "swarm_node2" do |config|
     config.vm.box = "box-cutter/ubuntu1404-docker"
-    config.vm.box_version = "2.0.16" # Docker 1.10.3
     config.vm.hostname = "swarm-node2"
     config.vm.network "private_network", ip: "10.0.7.13"
     config.vm.provision "shell", inline: $prepare_swarm_node_script
