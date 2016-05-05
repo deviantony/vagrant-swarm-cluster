@@ -74,14 +74,52 @@ $ docker -H 10.0.7.11:4000 info
 
 # Go further
 
+Setup a NFS file share between your Swarm nodes to host your Docker volumes.
+
+We'll use a the [Nginx image][nginximage] to start multiple Nginx containers inside the Swarm cluster.
+
+These containers will be load-balanced across our Swarn nodes but will share the same data volume.
+
 ## Networking
 
 Create an overlay network in your Swarm cluster to allow communication between your containers in the cluster:
 
 ```shell
-$ docker -H 10.0.7.11:4000 network create my_shared_network
+$ docker -H 10.0.7.11:4000 network create cluster_network
 ```
+
+## Volume
+
+Create a shared volume:
+
+```shell
+$ docker -H 10.0.7.11:4000 volume create --name nginx-vol
+```
+
+## Nginx containers and shared data
+
+Start a new Nginx container in the Swarm cluster:
+```shell
+$ docker -H 10.0.7.11:4000 run -d -p 80:80 --net my_shared_network -v shared-vol:/usr/share/nginx/html --name nginx1 nginx
+```
+
+At this point, if you access `10.0.7.12:80`, it should display Nginx welcome page.
+
+Copy the `index.html` file to be served by the Nginx container.
+```shell
+$ docker -H 10.0.7.11:4000 cp index.html nginx1:/usr/share/nginx/html/
+```
+
+If you now access `10.0.7.12:80`, it should display the content of the `index.html` file.
+
+Start another Nginx container:
+```shell
+$ docker -H 10.0.7.11:4000 run -d -p 80:80 --net my_shared_network -v shared-vol:/usr/share/nginx/html --name nginx2 nginx
+```
+
+Now, access our second Swarm node `10.0.7.13:80`, you should see the same page than the one displayed on the first node.
 
 [vagranthome]: https://www.vagrantup.com/docs/installation/  "Vagrant installation"
 [vagrantprovider]: https://www.vagrantup.com/docs/providers/ "Vagrant providers"
 [dockerhome]: https://docs.docker.com/engine/installation/  "Docker installation"
+[nginximage]: https://hub.docker.com/_/nginx/ "Nginx Docker image"
