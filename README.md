@@ -2,8 +2,9 @@
 
 Run a Swarm cluster locally using Vagrant.
 
-This will create and setup 4 Vagrant machines in a private network (10.0.7.0/24):
+This will create and setup 5 Vagrant machines in a private network (10.0.7.0/24):
 
+* NFS server: 10.0.7.9
 * Consul: 10.0.7.10
 * Swarm manager: 10.0.7.11
 * Swarm node 1: 10.0.7.12
@@ -30,8 +31,6 @@ $ vagrant up --provider virtualbox
 Supported providers:
 
 * virtualbox
-* vmware_desktop
-* parallels
 
 ## Bootstrap script
 
