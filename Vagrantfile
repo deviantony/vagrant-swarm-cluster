@@ -27,6 +27,7 @@ rm -rf /etc/docker/key.json
 echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.10:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
 wget -P /tmp https://github.com/gondor/docker-volume-netshare/releases/download/v0.16/docker-volume-netshare_0.16_amd64.deb;
 sudo dpkg -i /tmp/docker-volume-netshare_0.16_amd64.deb;
+update-rc.d docker-volume-netshare defaults;
 service docker-volume-netshare start;
 service docker start;
 SCRIPT
