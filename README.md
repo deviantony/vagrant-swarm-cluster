@@ -73,7 +73,7 @@ $ docker -H 10.0.7.11:4000 info
 
 # Go further
 
-Setup a NFS file share between your Swarm nodes to host your Docker volumes.
+Setup a NFS file share between your Swarm nodes to host your Docker volumes using the [convoy volume plugin][convoyplugin].
 
 We'll use a the [Nginx image][nginximage] to start multiple Nginx containers inside the Swarm cluster.
 
@@ -92,7 +92,7 @@ $ docker -H 10.0.7.11:4000 network create cluster_network
 Create a shared volume:
 
 ```shell
-$ docker -H 10.0.7.11:4000 volume create --name nginx-vol
+$ docker -H 10.0.7.11:4000 volume create -d convoy --name nginx-vol
 ```
 
 ## Nginx containers and shared data
@@ -122,3 +122,4 @@ Now, access our second Swarm node `10.0.7.13:80`, you should see the same page t
 [vagrantprovider]: https://www.vagrantup.com/docs/providers/ "Vagrant providers"
 [dockerhome]: https://docs.docker.com/engine/installation/  "Docker installation"
 [nginximage]: https://hub.docker.com/_/nginx/ "Nginx Docker image"
+[convoyplugin]: https://github.com/rancher/convoy "Convoy plugin"
