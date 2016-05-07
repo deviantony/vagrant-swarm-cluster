@@ -48,21 +48,20 @@ Or execute the following commands to start the cluster.
 Start the Consul container:
 
 ```shell
-$ docker -H 10.0.7.10:2375 run -d --restart always -p 8500:8500 --name consul progrium/consul -server -bootstrap
+$ docker -H 10.0.7.10:2375 run -d --restart always --net host -p 8500:8500 --name consul consul agent -bind 10.0.7.10 -client 10.0.7.10 -server -bootstrap-expect 1
 ```
 
 Start a Swarm manager node:
 
 ```shell
-$ docker -H 10.0.7.11:2375 run -d --restart always -p 4000:4000 --name swarm_manager swarm manage -H :4000 --replication --advertise 10.0.7.11:2375
-$ consul://10.0.7.10:8500
+$ docker -H 10.0.7.11:2375 run -d --restart always -p 4000:4000 --name swarm_manager swarm manage -H :4000 --replication --advertise 10.0.7.11:2375 consul://10.0.7.10:8500
 ```
 
 Start two Swarm nodes:
 
 ```shell
-$ docker -H 10.0.7.12:2375 run -d --restart always --name swarm_node1 swarm join --advertise 10.0.7.12:2375 consul://10.0.7.10:8500
-$ docker -H 10.0.7.13:2375 run -d --restart always --name swarm_node2 swarm join --advertise 10.0.7.13:2375 consul://10.0.7.10:8500
+$ docker -H 10.0.7.12:2375 run -d --restart always --name swarm_node1 swarm join --heartbeat 20s --ttl 30s --advertise 10.0.7.12:2375 consul://10.0.7.10:8500
+$ docker -H 10.0.7.13:2375 run -d --restart always --name swarm_node2 swarm join --heartbeat 20s --ttl 30s --advertise 10.0.7.13:2375 consul://10.0.7.10:8500
 ```
 
 Check Swarm cluster status:
@@ -73,7 +72,7 @@ $ docker -H 10.0.7.11:4000 info
 
 # Go further
 
-Setup a NFS file share between your Swarm nodes to host your Docker volumes using the [convoy volume plugin][convoyplugin].
+Setup a NFS file share between your Swarm nodes to host your Docker volumes using the [local-persist volume plugin][localpersistplugin].
 
 We'll use a the [Nginx image][nginximage] to start multiple Nginx containers inside the Swarm cluster.
 
@@ -84,7 +83,7 @@ These containers will be load-balanced across our Swarn nodes but will share the
 Create an overlay network in your Swarm cluster to allow communication between your containers in the cluster:
 
 ```shell
-$ docker -H 10.0.7.11:4000 network create cluster_network
+$ docker -H 10.0.7.11:4000 network create cluster-network
 ```
 
 ## Volume
@@ -92,14 +91,14 @@ $ docker -H 10.0.7.11:4000 network create cluster_network
 Create a shared volume:
 
 ```shell
-$ docker -H 10.0.7.11:4000 volume create -d convoy --name nginx-vol
+$ docker -H 10.0.7.11:4000 volume create -d local-persist -o mountpoint=/var/nfs/volumes/nginx --name shared-vol-nginx
 ```
 
 ## Nginx containers and shared data
 
 Start a new Nginx container in the Swarm cluster:
 ```shell
-$ docker -H 10.0.7.11:4000 run -d -p 80:80 --net my_shared_network -v shared-vol:/usr/share/nginx/html --name nginx1 nginx
+$ docker -H 10.0.7.11:4000 run -d --restart always -p 80:80 --net cluster-network -v shared-vol-nginx:/usr/share/nginx/html --name nginx1 nginx
 ```
 
 At this point, if you access `10.0.7.12:80`, it should display Nginx welcome page.
@@ -113,7 +112,7 @@ If you now access `10.0.7.12:80`, it should display the content of the `index.ht
 
 Start another Nginx container:
 ```shell
-$ docker -H 10.0.7.11:4000 run -d -p 80:80 --net my_shared_network -v shared-vol:/usr/share/nginx/html --name nginx2 nginx
+$ docker -H 10.0.7.11:4000 run -d --restart always -p 80:80 --net cluster-network -v shared-vol-nginx:/usr/share/nginx/html --name nginx2 nginx
 ```
 
 Now, access our second Swarm node `10.0.7.13:80`, you should see the same page than the one displayed on the first node.
@@ -122,4 +121,4 @@ Now, access our second Swarm node `10.0.7.13:80`, you should see the same page t
 [vagrantprovider]: https://www.vagrantup.com/docs/providers/ "Vagrant providers"
 [dockerhome]: https://docs.docker.com/engine/installation/  "Docker installation"
 [nginximage]: https://hub.docker.com/_/nginx/ "Nginx Docker image"
-[convoyplugin]: https://github.com/rancher/convoy "Convoy plugin"
+[localpersistplugin]: https://github.com/CWSpear/local-persist "Local Persist volume plugin"
