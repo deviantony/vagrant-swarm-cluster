@@ -53,7 +53,7 @@ $ docker -H 10.0.7.10:2375 run -d --restart always --net host -p 8500:8500 --nam
 Start a Swarm manager node:
 
 ```shell
-docker -H 10.0.7.11:2375 run -d --restart always -p 4000:4000 --name swarm_manager swarm manage -H :4000 --replication --advertise 10.0.7.11:2375 consul://10.0.7.10:8500
+$ docker -H 10.0.7.11:2375 run -d --restart always -p 4000:4000 --name swarm_manager swarm manage -H :4000 --replication --advertise 10.0.7.11:2375 consul://10.0.7.10:8500
 ```
 
 Start two Swarm nodes:
@@ -71,12 +71,14 @@ $ docker -H 10.0.7.11:4000 info
 
 # Go further
 
+Play !
+
 ## Networking
 
 Create an overlay network in your Swarm cluster to allow communication between your containers in the cluster:
 
 ```shell
-$ docker -H 10.0.7.11:4000 network create my_shared_network
+$ docker -H 10.0.7.11:4000 network create cluster-network
 ```
 
 [vagranthome]: https://www.vagrantup.com/docs/installation/  "Vagrant installation"
