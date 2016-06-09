@@ -7,7 +7,7 @@ echo "Starting Consul containers..."
 docker -H 10.0.7.10:2375 run -d --restart always --name consul1 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
 -e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
-consul agent -server -bootstrap-expect 3
+consul agent -server -ui -bootstrap-expect 3
 
 docker -H 10.0.7.11:2375 run -d --restart always --name consul2 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
