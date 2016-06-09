@@ -2,7 +2,7 @@
 
 SWARM_VERSION=1.2.0
 
-# Run Consul server on each node
+# Run a Consul server on the first three nodes
 echo "Starting Consul containers..."
 docker -H 10.0.7.10:2375 run -d --restart always --name consul1 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
@@ -19,6 +19,7 @@ docker -H 10.0.7.12:2375 run -d --restart always --name consul3 --net host \
 -e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
 consul agent -server -retry-join 10.0.7.10
 
+# Run a Consul agent on last node
 docker -H 10.0.7.13:2375 run -d --restart always --name consul4 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}' \
 -e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
