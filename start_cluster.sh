@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SWARM_VERSION=1.2.0
+SWARM_VERSION=latest
 
 # Run a Consul server on the first node
 echo "Starting Consul containers..."
@@ -10,7 +10,7 @@ docker -H 10.0.7.10:2375 run -d --restart always --name consul1 --net host \
 consul agent -server -ui -bootstrap-expect 1
 
 # Run a Consul agent on the second node
-docker -H 10.0.7.11:2375 run -d --restart always --name consul3 --net host \
+docker -H 10.0.7.11:2375 run -d --restart always --name consul2 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
 -e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
 consul agent -retry-join 10.0.7.10
@@ -22,7 +22,7 @@ swarm:${SWARM_VERSION} manage -H :4000 --replication --advertise 10.0.7.10:4000 
 
 # Run Swarm node
 echo "Starting Swarm node..."
-docker -H 10.0.7.11:2375 run -d --restart always --name swarm_node1 \
+docker -H 10.0.7.11:2375 run -d --restart always --name swarm_node \
 swarm:${SWARM_VERSION} join --heartbeat 20s --ttl 30s --advertise 10.0.7.11:2375 consul://10.0.7.11:8500
 
 # Swarm cluster status
