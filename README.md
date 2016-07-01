@@ -77,7 +77,7 @@ Setup a NFS file share between your Swarm nodes to host your Docker volumes usin
 
 We'll use a the [Nginx image][nginximage] to start multiple Nginx containers inside the Swarm cluster.
 
-These containers will be load-balanced across our Swarn nodes but will share the same data volume.
+These containers will be load-balanced across our Swarm nodes but will share the same data volume.
 
 ## Networking
 
