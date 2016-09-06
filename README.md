@@ -2,12 +2,11 @@
 
 Run a Swarm cluster locally using Vagrant.
 
-This will create and setup 4 Vagrant machines in a private network (10.0.7.0/24):
+This will create and setup 3 Vagrant machines in a private network (10.0.7.0/24):
 
 * Swarm manager: 10.0.7.10
-* Swarm replica: 10.0.7.11
-* Swarm node 1: 10.0.7.12
-* Swarm node 2: 10.0.7.13
+* Swarm node 1: 10.0.7.11
+* Swarm node 2: 10.0.7.12
 
 # Requirements
 
@@ -57,28 +56,19 @@ docker -H 10.0.7.10:2375 run -d --restart always --name consul1 --net host \
 consul agent -server -ui -bootstrap-expect 3
 ```
 
-Start a Consul *server* on the `swarm_replica` node:
-
-```shell
-docker -H 10.0.7.11:2375 run -d --restart always --name consul2 --net host \
--e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
--e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
-consul agent -server -retry-join 10.0.7.10
-```
-
 Start a Consul *server* on the `swarm_node1` node:
 
 ```shell
-docker -H 10.0.7.12:2375 run -d --restart always --name consul3 --net host \
+docker -H 10.0.7.11:2375 run -d --restart always --name consul3 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}' \
 -e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
 consul agent -server -retry-join 10.0.7.10
 ```
 
-Start a Consul *agent* on the `swarm_node2` node:
+Start a Consul *server* on the `swarm_node2` node:
 
 ```shell
-docker -H 10.0.7.13:2375 run -d --restart always --name consul4 --net host \
+docker -H 10.0.7.12:2375 run -d --restart always --name consul4 --net host \
 -e 'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}' \
 -e 'CONSUL_CLIENT_INTERFACE=eth1' -e 'CONSUL_BIND_INTERFACE=eth1' \
 consul agent -retry-join 10.0.7.10
@@ -93,21 +83,14 @@ docker -H 10.0.7.10:2375 run -d --restart always -p 4000:4000 --name swarm_manag
 swarm:${SWARM_VERSION} manage -H :4000 --replication --advertise 10.0.7.10:4000 consul://10.0.7.10:8500
 ```
 
-And one of the `swarm_replica` node:
-
-```shell
-docker -H 10.0.7.11:2375 run -d --restart always -p 4000:4000 --name swarm_replica \
-swarm:${SWARM_VERSION} manage -H :4000 --replication --advertise 10.0.7.11:4000 consul://10.0.7.11:8500
-```
-
 And after that, start two Swarm nodes on `swarm_node1` and `swarm_node2` nodes respectively:
 
 ```shell
-docker -H 10.0.7.12:2375 run -d --restart always --name swarm_node1 \
-swarm:${SWARM_VERSION} join --heartbeat 20s --ttl 30s --advertise 10.0.7.12:2375 consul://10.0.7.12:8500
+docker -H 10.0.7.11:2375 run -d --restart always --name swarm_node1 \
+swarm:${SWARM_VERSION} join --heartbeat 20s --ttl 30s --advertise 10.0.7.11:2375 consul://10.0.7.11:8500
 
-docker -H 10.0.7.13:2375 run -d --restart always --name swarm_node2 \
-swarm:${SWARM_VERSION} join --heartbeat 20s --ttl 30s --advertise 10.0.7.13:2375 consul://10.0.7.13:8500
+docker -H 10.0.7.12:2375 run -d --restart always --name swarm_node2 \
+swarm:${SWARM_VERSION} join --heartbeat 20s --ttl 30s --advertise 10.0.7.12:2375 consul://10.0.7.12:8500
 ```
 
 Finally, after a few time, check Swarm cluster status:
