@@ -10,27 +10,6 @@ echo 'DOCKER_OPTS="-H 0.0.0.0:2375 -H unix:///var/run/docker.sock"' | tee -a /et
 service docker start;
 SCRIPT
 
-$prepare_swarm_manager_script = <<SCRIPT
-service docker stop;
-rm -rf /etc/docker/key.json
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.10:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
-service docker start;
-SCRIPT
-
-$prepare_swarm_node1_script = <<SCRIPT
-service docker stop;
-rm -rf /etc/docker/key.json;
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.11:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
-service docker start;
-SCRIPT
-
-$prepare_swarm_node2_script = <<SCRIPT
-service docker stop;
-rm -rf /etc/docker/key.json;
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.12:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
-service docker start;
-SCRIPT
-
 Vagrant.configure(2) do |config|
   config.vm.define "swarm_manager" do |config|
     config.vm.box = "deviantony/ubuntu-14.04-docker"
