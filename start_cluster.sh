@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SWARM_VERSION=1.2.3
+SWARM_VERSION=1.2.4
 
 # Run a Consul server on the first three nodes
 echo "Starting Consul containers..."
