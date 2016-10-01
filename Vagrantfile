@@ -28,7 +28,7 @@ SCRIPT
 
 
 Vagrant.configure(2) do |config|
-  config.vm.define "swarm_manager" do |config|
+  config.vm.define "swarm_ha_manager" do |config|
     config.vm.box = "deviantony/ubuntu-14.04-docker"
     config.vm.hostname = "swarm-manager"
     config.vm.network "private_network", ip: "10.0.7.10"
@@ -36,7 +36,7 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder ".", "/vagrant", disabled: true
   end
 
-  config.vm.define "swarm_replica" do |config|
+  config.vm.define "swarm_ha_replica" do |config|
     config.vm.box = "deviantony/ubuntu-14.04-docker"
     config.vm.hostname = "swarm-replica"
     config.vm.network "private_network", ip: "10.0.7.11"
@@ -44,7 +44,7 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder ".", "/vagrant", disabled: true
   end
 
-  config.vm.define "swarm_node1" do |config|
+  config.vm.define "swarm_ha_node1" do |config|
     config.vm.box = "deviantony/ubuntu-14.04-docker"
     config.vm.hostname = "swarm-node1"
     config.vm.network "private_network", ip: "10.0.7.12"
@@ -52,7 +52,7 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder ".", "/vagrant", disabled: true
   end
 
-  config.vm.define "swarm_node2" do |config|
+  config.vm.define "swarm_ha_node2" do |config|
     config.vm.box = "deviantony/ubuntu-14.04-docker"
     config.vm.hostname = "swarm-node2"
     config.vm.network "private_network", ip: "10.0.7.13"

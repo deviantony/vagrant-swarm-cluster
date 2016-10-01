@@ -2,6 +2,8 @@
 
 SWARM_VERSION=latest
 
+export DOCKER_API_VERSION=1.23
+
 # Run a Consul server on the first three nodes
 echo "Starting Consul containers..."
 docker -H 10.0.7.10:2375 run -d --restart always --name consul1 --net host \
