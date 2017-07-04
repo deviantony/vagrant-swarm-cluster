@@ -1,12 +1,12 @@
 $prepare_docker_engine_script = <<SCRIPT
 apt-get update;
-apt-get install -y apt-transport-https ca-certificates;
-curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
-add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
-apt-get update && apt-get install -y docker-engine;
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update && apt-get install -y docker-ce;
 service docker stop;
 rm -rf /etc/docker/key.json
-echo 'DOCKER_OPTS="-H 0.0.0.0:2375 -H unix:///var/run/docker.sock"' | tee -a /etc/default/docker;
+echo '{ "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"] }' | tee -a /etc/docker/daemon.json;
 service docker start;
 SCRIPT
 
