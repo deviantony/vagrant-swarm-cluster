@@ -1,28 +1,48 @@
 $prepare_swarm_manager_script = <<SCRIPT
+apt-get update;
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update && apt-get install -y docker-ce;
 service docker stop;
 rm -rf /etc/docker/key.json
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.10:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
+echo '{ "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"], "cluster-store": "consul://10.0.7.10:8500", "cluster-advertise": "eth1:2375" }' | tee -a /etc/docker/daemon.json;
 service docker start;
 SCRIPT
 
 $prepare_swarm_replica_script = <<SCRIPT
+apt-get update;
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update && apt-get install -y docker-ce;
 service docker stop;
 rm -rf /etc/docker/key.json
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.11:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
+echo '{ "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"], "cluster-store": "consul://10.0.7.11:8500", "cluster-advertise": "eth1:2375" }' | tee -a /etc/docker/daemon.json;
 service docker start;
 SCRIPT
 
 $prepare_swarm_node1_script = <<SCRIPT
+apt-get update;
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update && apt-get install -y docker-ce;
 service docker stop;
-rm -rf /etc/docker/key.json;
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.12:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
+rm -rf /etc/docker/key.json
+echo '{ "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"], "cluster-store": "consul://10.0.7.12:8500", "cluster-advertise": "eth1:2375" }' | tee -a /etc/docker/daemon.json;
 service docker start;
 SCRIPT
 
 $prepare_swarm_node2_script = <<SCRIPT
+apt-get update;
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update && apt-get install -y docker-ce;
 service docker stop;
-rm -rf /etc/docker/key.json;
-echo 'DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://10.0.7.13:8500 --cluster-advertise=eth1:2375"' | tee -a /etc/default/docker;
+rm -rf /etc/docker/key.json
+echo '{ "hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"], "cluster-store": "consul://10.0.7.13:8500", "cluster-advertise": "eth1:2375" }' | tee -a /etc/docker/daemon.json;
 service docker start;
 SCRIPT
 
