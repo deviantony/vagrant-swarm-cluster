@@ -2,11 +2,10 @@
 
 Run a Swarm cluster locally using Vagrant.
 
-This will create and setup 3 Vagrant machines in a private network (10.0.7.0/24):
+This will create and setup 2 Vagrant machines in a private network (10.0.7.0/24):
 
-* Swarm manager: 10.0.7.10
-* Swarm node 1: 10.0.7.11
-* Swarm node 2: 10.0.7.12
+* Swarm node 1 (manager): 10.0.7.10
+* Swarm node 2 (worker): 10.0.7.11
 
 # Requirements
 
