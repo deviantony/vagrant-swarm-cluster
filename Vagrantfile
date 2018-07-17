@@ -26,12 +26,4 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", inline: $prepare_docker_engine_script
     config.vm.synced_folder ".", "/vagrant", disabled: true
   end
-
-  config.vm.define "swarmnode3" do |config|
-    config.vm.box = "deviantony/ubuntu-14.04-docker"
-    config.vm.hostname = "swarmnode3"
-    config.vm.network "private_network", ip: "10.0.7.12"
-    config.vm.provision "shell", inline: $prepare_docker_engine_script
-    config.vm.synced_folder ".", "/vagrant", disabled: true
-  end
 end
